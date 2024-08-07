@@ -1,3 +1,21 @@
+@use "bulma/sass/utilities" as utils
+
+// external Bulma variables
+$colors: utils.$colors
+$control-height: utils.$control-height
+$control-line-height: utils.$control-line-height
+$grey: utils.$grey !default
+$grey-light: utils.$grey-light !default
+$primary: utils.$primary !default
+$radius: utils.$radius !default
+$radius-large: utils.$radius-large !default
+$size-large: utils.$size-large !default
+$size-medium: utils.$size-medium !default
+$size-normal: utils.$size-normal !default
+$size-small: utils.$size-small !default
+$white: utils.$white !default
+
+// extension variables
 $switch-background: $grey-light !default
 $switch-border: .1rem solid transparent !default
 $switch-background-active: $primary !default
@@ -7,6 +25,10 @@ $switch-paddle-background-active: $primary !default
 $switch-paddle-offset: 0.25rem !default
 $switch-paddle-transition: all 0.25s ease-out !default
 $switch-focus: 1px dotted $grey-light !default
+
+// internal variables
+$color: null
+$color-invert: null
 
 =switch-size($size)
 	$switch-height: $size * 1.5
@@ -168,8 +190,12 @@ $switch-focus: 1px dotted $grey-light !default
 		+switch-size($size-large)
 
 	@each $name, $pair in $colors
-		$color: nth($pair, 1)
-		$color-invert: nth($pair, 2)
+		@if type-of($pair) == "list"
+			$color: nth($pair, 1) !global
+			$color-invert: nth($pair, 2) !global
+		@else
+			$color: $pair !global
+			$color-invert: utils.bulmaFindColorInvert($pair) !global
 		&.is-#{$name}
 			+ label
 				.switch-active
